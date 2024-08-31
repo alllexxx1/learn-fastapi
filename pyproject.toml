@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "learn-fastapi"
+version = "0.1.0"
+description = ""
+authors = ["https://github.com/alllexxx1"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = {extras = ["all"], version = "^0.112.2"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
