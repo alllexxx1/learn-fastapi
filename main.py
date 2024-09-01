@@ -2,6 +2,9 @@ from datetime import date
 from typing import Optional
 
 from fastapi import FastAPI, Query
+
+from pydantic import BaseModel
+
 import uvicorn
 
 
@@ -9,7 +12,7 @@ app = FastAPI()
 
 
 @app.get('/hotels')
-def find_hotel(
+def get_hotels(
         location: str,
         date_from: date,
         date_to: date,
@@ -18,6 +21,17 @@ def find_hotel(
 
 ):
     return location, date_from, date_to, stars, has_spa
+
+
+class SchemaBooking(BaseModel):
+    room_id: int
+    date_from: date
+    date_to: date
+
+
+@app.post('/bookings')
+def add_booking(booking: SchemaBooking):
+    pass
 
 
 if __name__ == '__main__':
