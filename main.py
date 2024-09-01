@@ -1,3 +1,4 @@
+from dataclasses import Field
 from datetime import date
 from typing import Optional
 
@@ -11,6 +12,12 @@ import uvicorn
 app = FastAPI()
 
 
+class SchemaHotel(BaseModel):
+    address: str
+    name: str
+    stars: int
+
+
 @app.get('/hotels')
 def get_hotels(
         location: str,
@@ -18,9 +25,17 @@ def get_hotels(
         date_to: date,
         stars: Optional[int] = Query(None, ge=1, le=5),
         has_spa: Optional[bool] = None
+) -> list[SchemaHotel]:
 
-):
-    return location, date_from, date_to, stars, has_spa
+    hotels = [
+        {
+            'address': 'Gorgia Street, 14. Atlanta ',
+            'name' : 'Meraki Resort',
+            'stars': 5
+        }
+    ]
+
+    return hotels
 
 
 class SchemaBooking(BaseModel):
