@@ -7,6 +7,7 @@ from alembic import context
 
 from hotels_app.database import Base, DATABASE_URL
 from hotels_app.hotels.models import Hotels
+from hotels_app.bookings.models import Bookings
 
 
 # this is the Alembic Config object, which provides
