@@ -7,8 +7,12 @@ from pydantic import BaseModel
 
 import uvicorn
 
+from hotels_app.bookings.router import router as router_bookings
+
 
 app = FastAPI()
+
+app.include_router(router_bookings)
 
 
 class HotelSearchArgs:
@@ -49,16 +53,16 @@ def get_hotels(
     return hotels
 
 
-class SchemaBooking(BaseModel):
-    room_id: int
-    date_from: date
-    date_to: date
+# class SchemaBooking(BaseModel):
+#     room_id: int
+#     date_from: date
+#     date_to: date
 
 
-@app.post('/bookings')
-def add_booking(booking: SchemaBooking):
-    pass
+# @app.post('/bookings')
+# def add_booking(booking: SchemaBooking):
+#     pass
 
 
 if __name__ == '__main__':
-    uvicorn.run('main:hotels_app', host='127.0.0.1', port=8000, reload=True)
+    uvicorn.run('main:app', host='127.0.0.1', port=8000, reload=True)

@@ -1,5 +1,5 @@
-from pydantic import root_validator, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
+# from pydantic import root_validator, SecretStr
 
 
 class Settings(BaseSettings):
