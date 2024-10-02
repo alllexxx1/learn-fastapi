@@ -1,5 +1,4 @@
-from dns.resolver import query
-from sqlalchemy import select
+from sqlalchemy import select, insert
 
 from database import async_session_maker
 
@@ -27,3 +26,10 @@ class BaseDAO:
             query = select(cls.model).filter_by(**filters)
             result = await session.execute(query)
             return result.scalars().all()  # return result.mappings().all()
+
+    @classmethod
+    async def add_one(cls, **data):
+        async with async_session_maker() as session:
+            query = insert(cls.model).values(**data)
+            await session.execute(query)
+            await session.commit()
