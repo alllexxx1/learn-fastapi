@@ -1,7 +1,7 @@
-init-migrations:
+init-migration:
 	alembic init migrations
 
-make-migrations:
+make-migration:
 	alembic revision --autogenerate -m ''
 
 migrate:

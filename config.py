@@ -8,6 +8,8 @@ class Settings(BaseSettings):
     DB_USER: str
     DB_PASS: str
     DB_NAME: str
+    SECRET_KEY: str
+    HASH_ALGORITHM: str
 
     # @root_validator(skip_on_failure=True)
     # def get_database_url(cls, v):
