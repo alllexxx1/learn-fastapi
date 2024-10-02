@@ -1,19 +1,18 @@
-from datetime import datetime, timezone
-from fastapi import Depends, Request, HTTPException, status
+from fastapi import Depends, Request
 
-from jose import jwt, JWTError
+from jose import jwt, JWTError, ExpiredSignatureError
 
 from config import settings
 from hotels_app.users.dao import UserDAO
+import exeptions
+
 
 def get_token(request: Request) -> str:
     token = request.cookies.get('booking_access_token')
 
     if not token:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail='There is no token'
-        )
+        raise exeptions.NoTokenException
+
     return token
 
 
@@ -24,32 +23,18 @@ async def get_current_user(token: str = Depends(get_token)):
             settings.SECRET_KEY,
             settings.HASH_ALGORITHM
         )
+    except ExpiredSignatureError:
+        raise exeptions.ExpiredTokenException
     except JWTError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail='Token is not JWT'
-        )
-
-    expire: str = payload.get('exp')
-    if not expire or int(expire) < datetime.now(timezone.utc).timestamp():
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail='Token expired'
-        )
+        raise exeptions.IncorrectTokenFormatException
 
     user_id: str = payload.get('sub')
     if not user_id:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail='User_id is missed in token payload'
-        )
+        raise exeptions.InsufficientPayloadDataException
 
     user = await UserDAO.find_by_id(int(user_id))
     if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail='There is no such user in DB'
-        )
+        raise exeptions.NoSuchUserException
 
     return user
 
@@ -59,7 +44,7 @@ async def get_current_user(token: str = Depends(get_token)):
 # async def get_current_admin_user(current_user: Users = Depends(get_current_user)):
 #     if current_user.role != 'admin':  # We have to have "role" field in "Users" table
 #         raise HTTPException(
-#             status_code=status.HTTP_401_UNAUTHORIZED,
+#             status_code=status.HTTP_403_FORBIDDEN,
 #             detail='You have no rights'
 #         )
 #     admin_user = current_user

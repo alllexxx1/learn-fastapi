@@ -1,10 +1,11 @@
-from fastapi import Depends, APIRouter, HTTPException, status, Response
+from fastapi import APIRouter, Depends, Response
 
 from hotels_app.users.dependencies import get_current_user
 from hotels_app.users.models import Users
 from hotels_app.users.schemas import SchemaUserAuth
 from hotels_app.users.dao import UserDAO
 from hotels_app.users.auth import get_password_hash, verify_password, create_access_token
+from exeptions import UserAlreadyExistsException, IncorrectCredentialsException
 
 
 router = APIRouter(
@@ -18,7 +19,7 @@ async def register_user(user_data: SchemaUserAuth) -> None:
     existing_user = await UserDAO.find_one_or_none(email=user_data.email)
 
     if existing_user:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT)
+        raise UserAlreadyExistsException
 
     hashed_password = get_password_hash(user_data.password)
     await UserDAO.add_one(email=user_data.email, hashed_password=hashed_password)
@@ -29,7 +30,7 @@ async def login(response: Response, user_data: SchemaUserAuth) -> dict:
     user = await UserDAO.find_one_or_none(email=user_data.email)
 
     if not user or not verify_password(user_data.password, user.hashed_password):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+        raise IncorrectCredentialsException
 
     access_token = create_access_token({'sub': str(user.id)})
     response.set_cookie('booking_access_token', access_token, httponly=True)
@@ -37,7 +38,7 @@ async def login(response: Response, user_data: SchemaUserAuth) -> dict:
 
 
 @router.post('/logout')
-async def logout(response: Response, user: Users = Depends(get_current_user)) -> None:
+async def logout(response: Response) -> None:
     response.delete_cookie('booking_access_token')
 
 
