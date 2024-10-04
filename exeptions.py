@@ -20,25 +20,30 @@ class IncorrectCredentialsException(BaseBookingException):
 
 
 class NoTokenException(BaseBookingException):
-    status_code=status.HTTP_401_UNAUTHORIZED
-    detail="User is not authorized. Token hasn't been passed"
+    status_code = status.HTTP_401_UNAUTHORIZED
+    detail = "User is not authorized. Token hasn't been passed"
 
 
 class IncorrectTokenFormatException(BaseBookingException):
-    status_code=status.HTTP_401_UNAUTHORIZED
-    detail='Incorrect token format'
+    status_code = status.HTTP_401_UNAUTHORIZED
+    detail = 'Incorrect token format'
 
 
 class ExpiredTokenException(BaseBookingException):
-    status_code=status.HTTP_401_UNAUTHORIZED
-    detail='Token expired'
+    status_code = status.HTTP_401_UNAUTHORIZED
+    detail = 'Token expired'
 
 
 class InsufficientPayloadDataException(BaseBookingException):
-    status_code=status.HTTP_401_UNAUTHORIZED
-    detail='User_id is missed in token payload'
+    status_code = status.HTTP_401_UNAUTHORIZED
+    detail = 'User_id is missed in token payload'
 
 
 class NoSuchUserException(BaseBookingException):
-    status_code=status.HTTP_401_UNAUTHORIZED
-    detail="User with given ID wasn't found in DB"
+    status_code = status.HTTP_401_UNAUTHORIZED
+    detail = "User with given ID wasn't found in DB"
+
+
+class RoomCannotBeBookedException(BaseBookingException):
+    status_code = status.HTTP_409_CONFLICT
+    detail = 'All rooms are booked'
