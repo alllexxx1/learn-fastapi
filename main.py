@@ -9,11 +9,14 @@ import uvicorn
 
 from hotels_app.bookings.router import router as router_bookings
 from hotels_app.users.router import router as router_users
-
+from hotels_app.hotels.router import router as router_hotels
+from hotels_app.rooms.router import router as router_rooms
 
 app = FastAPI()
 
 app.include_router(router_users)
+app.include_router(router_hotels)
+app.include_router(router_rooms)
 app.include_router(router_bookings)
 
 
@@ -39,20 +42,20 @@ class SchemaHotel(BaseModel):
     stars: int
 
 
-@app.get('/hotels')
-def get_hotels(
-        search_args: HotelSearchArgs = Depends()
-) -> list[SchemaHotel]:
-
-    hotels = [
-        {
-            'address': 'Gorgia Street, 14. Atlanta ',
-            'name' : 'Meraki Resort',
-            'stars': 5
-        }
-    ]
-
-    return hotels
+# @app.get('/hotels')
+# def get_hotels(
+#         search_args: HotelSearchArgs = Depends()
+# ) -> list[SchemaHotel]:
+#
+#     hotels = [
+#         {
+#             'address': 'Gorgia Street, 14. Atlanta ',
+#             'name' : 'Meraki Resort',
+#             'stars': 5
+#         }
+#     ]
+#
+#     return hotels
 
 
 # class SchemaBooking(BaseModel):

@@ -47,3 +47,18 @@ class NoSuchUserException(BaseBookingException):
 class RoomCannotBeBookedException(BaseBookingException):
     status_code = status.HTTP_409_CONFLICT
     detail = 'All rooms are booked'
+
+
+class BookingCannotBeDeletedException(BaseBookingException):
+    status_code = status.HTTP_406_NOT_ACCEPTABLE
+    detail = 'You are not allowed to delete this resource'
+
+
+class DateMessException(BaseBookingException):
+    status_code = status.HTTP_406_NOT_ACCEPTABLE
+    detail = 'The check-in date cannot be later than the check-out date'
+
+
+class TooLongBookingPeriodException(BaseBookingException):
+    status_code = status.HTTP_406_NOT_ACCEPTABLE
+    detail = 'The maximum booking period is 31 days'

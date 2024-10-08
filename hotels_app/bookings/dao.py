@@ -3,16 +3,17 @@ from datetime import date
 from sqlalchemy import select, func, and_, or_
 from sqlalchemy.dialects.mysql import insert
 
+from database import async_session_maker, engine
 from hotels_app.bookings.models import Bookings
 from hotels_app.dao.base import BaseDAO
-from database import async_session_maker, engine
 from hotels_app.rooms.models import Rooms
+
 
 class BookingDAO(BaseDAO):
     model = Bookings
 
     @classmethod
-    async def add(
+    async def add_booking(
             cls,
             user_id: int,
             room_id: int,
@@ -77,3 +78,17 @@ class BookingDAO(BaseDAO):
 
             else:
                 return None
+
+
+    @classmethod
+    async def find_all_bookings(cls, user_id):
+        async with async_session_maker() as session:
+            query = select(
+                cls.model.__table__.columns,
+                Rooms.__table__.columns,
+            ).join(
+                Rooms, cls.model.room_id == Rooms.id, isouter=True
+            ).where(cls.model.user_id == user_id)
+
+            result = await session.execute(query)
+            return result.mappings().all()

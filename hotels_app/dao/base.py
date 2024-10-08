@@ -1,4 +1,4 @@
-from sqlalchemy import select, insert
+from sqlalchemy import delete, insert, select, exc
 
 from database import async_session_maker
 
@@ -33,3 +33,17 @@ class BaseDAO:
             query = insert(cls.model).values(**data)
             await session.execute(query)
             await session.commit()
+
+
+    @classmethod
+    async def delete(cls, **filters):
+        async with async_session_maker() as session:
+            query = delete(cls.model).filter_by(**filters).returning(cls.model)
+            deleted_resource = await session.execute(query)
+            await session.commit()
+            return deleted_resource.mappings().one_or_none()
+
+            # try:
+            #     return deleted_resource.mappings().one()
+            # except exc.NoResultFound:
+            #     return None
