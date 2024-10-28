@@ -1,5 +1,7 @@
 from fastapi import APIRouter, Depends
 
+from fastapi_cache.decorator import cache
+
 from exeptions import DateMessException, TooLongBookingPeriodException
 from hotels_app.rooms.schemas import SchemaRoomInfo, RoomSearchArgs
 from hotels_app.rooms.dao import RoomDAO
@@ -12,6 +14,7 @@ router = APIRouter(
 
 
 @router.get('/{hotel_id}/rooms')
+@cache(expire=25)
 async def get_rooms_by_date(
     hotel_id: int,
     search_args: RoomSearchArgs = Depends()

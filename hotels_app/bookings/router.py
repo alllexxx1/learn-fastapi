@@ -1,4 +1,8 @@
+import asyncio
+
 from fastapi import APIRouter, Depends, status
+
+from fastapi_cache.decorator import cache
 
 from exeptions import (
     RoomCannotBeBookedException,
@@ -21,9 +25,11 @@ router = APIRouter(
 
 
 @router.get('')
+@cache(expire=15)
 async def get_bookings(
         user: Users = Depends(get_current_user)
 ) -> list[SchemaBookingInfo]:
+    await asyncio.sleep(3)
     result = await BookingDAO.find_all_bookings(user_id=user.id)
     return result
 

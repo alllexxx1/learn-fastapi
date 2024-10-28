@@ -74,7 +74,7 @@ class BookingDAO(BaseDAO):
                 ).returning(Bookings)
                 booking = await session.execute(query_booking)
                 await session.commit()
-                return booking.scalar()
+                return booking.scalar()  # return booking.mappings().one()
 
             else:
                 return None

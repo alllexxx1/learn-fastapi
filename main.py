@@ -1,23 +1,50 @@
 from datetime import date
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 from typing import Optional
 
 from fastapi import FastAPI, Query, Depends
+from fastapi.staticfiles import StaticFiles
 
 from pydantic import BaseModel
 
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
+
+from redis import asyncio as aioredis
+
 import uvicorn
 
+from config import settings
 from hotels_app.bookings.router import router as router_bookings
 from hotels_app.users.router import router as router_users
 from hotels_app.hotels.router import router as router_hotels
 from hotels_app.rooms.router import router as router_rooms
+from hotels_app.pages.router import router as router_pages
+from hotels_app.images.router import router as router_images
 
-app = FastAPI()
+
+@asynccontextmanager
+async def lifespan(_: FastAPI) -> AsyncIterator[None]:
+    redis = aioredis.from_url(settings.REDIS_URL)
+    FastAPICache.init(RedisBackend(redis), prefix='cache')
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
+app.mount(
+    '/static',
+    StaticFiles(directory='hotels_app/static'),
+    name='static'
+)
 
 app.include_router(router_users)
 app.include_router(router_hotels)
 app.include_router(router_rooms)
 app.include_router(router_bookings)
+
+app.include_router(router_pages)
+app.include_router(router_images)
 
 
 class HotelSearchArgs:

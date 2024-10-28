@@ -2,6 +2,8 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends
 
+from fastapi_cache.decorator import cache
+
 from exeptions import DateMessException, TooLongBookingPeriodException
 from hotels_app.hotels.dao import HotelDAO
 from hotels_app.hotels.schemas import (
@@ -18,6 +20,7 @@ router = APIRouter(
 
 
 @router.get('')
+@cache(expire=30)
 async def get_hotels_by_location_and_date(
     search_args: HotelSearchArgs = Depends()
 ) -> list[SchemaHotelInfo]:
@@ -36,6 +39,7 @@ async def get_hotels_by_location_and_date(
 
 
 @router.get('/{hotel_id}')
+@cache(expire=60)
 async def get_hotel(hotel_id: int) -> Optional[SchemaHotel]:
     result = await HotelDAO.find_one_or_none(id=hotel_id)
     return result
