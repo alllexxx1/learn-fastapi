@@ -3,8 +3,10 @@ from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from typing import Optional
 
-from fastapi import FastAPI, Query, Depends
+from fastapi import FastAPI, Query
 from fastapi.staticfiles import StaticFiles
+
+from sqladmin import Admin
 
 from pydantic import BaseModel
 
@@ -16,12 +18,18 @@ from redis import asyncio as aioredis
 import uvicorn
 
 from config import settings
+from database import engine
 from hotels_app.bookings.router import router as router_bookings
 from hotels_app.users.router import router as router_users
 from hotels_app.hotels.router import router as router_hotels
 from hotels_app.rooms.router import router as router_rooms
 from hotels_app.pages.router import router as router_pages
 from hotels_app.images.router import router as router_images
+
+from hotels_app.users.admin import UsersAdmin
+from hotels_app.bookings.admin import BookingsAdmin
+from hotels_app.hotels.admin import HotelsAdmin
+from hotels_app.rooms.admin import RoomsAdmin
 
 
 @asynccontextmanager
@@ -38,13 +46,20 @@ app.mount(
     name='static'
 )
 
+# All project routers
 app.include_router(router_users)
 app.include_router(router_hotels)
 app.include_router(router_rooms)
 app.include_router(router_bookings)
-
 app.include_router(router_pages)
 app.include_router(router_images)
+
+# Admin panel
+admin = Admin(app, engine)
+admin.add_view(UsersAdmin)
+admin.add_view(BookingsAdmin)
+admin.add_view(HotelsAdmin)
+admin.add_view(RoomsAdmin)
 
 
 class HotelSearchArgs:
