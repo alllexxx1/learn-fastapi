@@ -14,12 +14,21 @@ class Settings(BaseSettings):
 
     REDIS_HOST: str
     REDIS_PORT: int
-    REDIS_USER: str
-    REDIS_USER_PASSWORD: str
+    # REDIS_USER: str
+    # REDIS_USER_PASSWORD: str
 
     @property
     def REDIS_URL(self):
-        return f'redis://{self.REDIS_USER}:{self.REDIS_USER_PASSWORD}@{self.REDIS_HOST}:{self.REDIS_PORT}/0'
+        return f'redis://{self.REDIS_HOST}:{self.REDIS_PORT}'
+
+    # @property
+    # def REDIS_URL(self):
+    #     return f'redis://{self.REDIS_USER}:{self.REDIS_USER_PASSWORD}@{self.REDIS_HOST}:{self.REDIS_PORT}/0'
+
+    IMAP_SMTP_HOST: str
+    IMAP_SMTP_PORT: int
+    IMAP_SMTP_USERNAME: str
+    IMAP_SMTP_PASSWORD: str
 
     # @root_validator(skip_on_failure=True)
     # def get_database_url(cls, v):
