@@ -26,6 +26,7 @@ from hotels_app.rooms.router import router as router_rooms
 from hotels_app.pages.router import router as router_pages
 from hotels_app.images.router import router as router_images
 
+from hotels_app.users.admin import AdminAuth
 from hotels_app.users.admin import UsersAdmin
 from hotels_app.bookings.admin import BookingsAdmin
 from hotels_app.hotels.admin import HotelsAdmin
@@ -55,7 +56,8 @@ app.include_router(router_pages)
 app.include_router(router_images)
 
 # Admin panel
-admin = Admin(app, engine)
+authentication_backend = AdminAuth(secret_key=settings.SECRET_KEY)
+admin = Admin(app, engine, authentication_backend=authentication_backend)
 admin.add_view(UsersAdmin)
 admin.add_view(BookingsAdmin)
 admin.add_view(HotelsAdmin)
