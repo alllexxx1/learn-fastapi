@@ -1,8 +1,9 @@
+from alembic.command import current
 from fastapi import APIRouter, Depends, Response
 
 from hotels_app.users.dependencies import get_current_user
 from hotels_app.users.models import Users
-from hotels_app.users.schemas import SchemaUserAuth
+from hotels_app.users.schemas import SchemaUserAuth, SchemaUser
 from hotels_app.users.dao import UserDAO
 from hotels_app.users.auth import get_password_hash, verify_password, create_access_token
 from exeptions import UserAlreadyExistsException, IncorrectCredentialsException, NoRightsException
@@ -43,7 +44,9 @@ async def logout(response: Response) -> None:
 
 
 @router.get('/me')
-async def read_current_user_info(current_user: Users = Depends(get_current_user)):
+async def read_current_user_info(
+        current_user: Users = Depends(get_current_user)
+) -> SchemaUser:
     return current_user
 
 

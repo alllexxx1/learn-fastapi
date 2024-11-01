@@ -1,6 +1,12 @@
 from pydantic import BaseModel, ConfigDict, EmailStr
 
 
+class SchemaUser(BaseModel):
+    id: int
+    email: EmailStr
+    hashed_password: str
+
+
 class SchemaUserAuth(BaseModel):
     email: EmailStr
     password: str
