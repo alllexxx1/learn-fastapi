@@ -1,8 +1,11 @@
+from typing import Literal
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
-# from pydantic import root_validator, SecretStr
+from pydantic import ConfigDict, SecretStr, root_validator
 
 
 class Settings(BaseSettings):
+    MODE: Literal['DEV', 'TEST', 'PROD']
     SECRET_KEY: str
     HASH_ALGORITHM: str
 
@@ -11,6 +14,16 @@ class Settings(BaseSettings):
     DB_USER: str
     DB_PASS: str
     DB_NAME: str
+
+    DB_TEST_HOST: str
+    DB_TEST_PORT: int
+    DB_TEST_USER: str
+    DB_TEST_PASS: str
+    DB_TEST_NAME: str
+
+    @property
+    def TEST_DATABASE_URL(self):
+        return f'postgresql+asyncpg://{self.DB_TEST_USER}:{self.DB_TEST_PASS}@{self.DB_TEST_HOST}:{self.DB_TEST_PORT}/{self.DB_TEST_NAME}'
 
     REDIS_HOST: str
     REDIS_PORT: int
@@ -37,10 +50,15 @@ class Settings(BaseSettings):
 
     # @property
     # def DATABASE_URL(self):
-    #     return f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+    #     return f'postgresql+asyncpg://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}'
 
-    class Config:
-        env_file = '.env'
+    model_config = ConfigDict(
+        env_file='.env'
+    )
+
+    # Deprecated structure
+    # class Config:
+    #     env_file = '.env'
 
 
 # class Settings(BaseSettings):

@@ -1,7 +1,7 @@
 from datetime import date
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class SchemaBooking(BaseModel):
@@ -14,8 +14,13 @@ class SchemaBooking(BaseModel):
     total_cost: int
     total_days: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(
+        from_attributes=True
+    )
+
+    # deprecated structure
+    # class Config:
+    #     from_attributes = True
 
 
 class SchemaBookingInfo(SchemaBooking):
@@ -24,8 +29,13 @@ class SchemaBookingInfo(SchemaBooking):
     description: Optional[str] = None
     services: list[str]
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(
+        from_attributes=True
+    )
+
+    # deprecated structure
+    # class Config:
+    #     from_attributes = True
 
 
 class SchemaNewBooking(BaseModel):

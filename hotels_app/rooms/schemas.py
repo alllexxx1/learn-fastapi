@@ -1,7 +1,7 @@
 from datetime import datetime, date, timezone, timedelta
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from fastapi import Query
 
@@ -16,15 +16,25 @@ class SchemaRoom(BaseModel):
     quantity: int
     image_id: int
 
-    class Config:
-        from_attribute = True
+    model_config = ConfigDict(
+        from_attributes=True
+    )
+
+    # deprecated structure
+    # class Config:
+    #     from_attribute = True
 
 
 class SchemaRoomInfo(SchemaRoom):
     rooms_left: int
 
-    class Config:
-        from_attribute = True
+    model_config = ConfigDict(
+        from_attributes=True
+    )
+
+    # deprecated structure
+    # class Config:
+    #     from_attribute = True
 
 
 class RoomSearchArgs:

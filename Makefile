@@ -4,7 +4,7 @@ init-migration:
 make-migration:
 	alembic revision --autogenerate -m ''
 
-migrate::
+migrate:
 	alembic upgrade head
 
 downgrade:

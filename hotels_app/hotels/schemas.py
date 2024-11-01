@@ -1,6 +1,6 @@
 from datetime import date, datetime, timezone, timedelta
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from fastapi import Query
 
@@ -13,15 +13,25 @@ class SchemaHotel(BaseModel):
     rooms_quantity: int
     image_id: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(
+        from_attributes=True
+    )
+
+    # deprecated structure
+    # class Config:
+    #     from_attributes = True
 
 
 class SchemaHotelInfo(SchemaHotel):
     rooms_left: int
 
-    class Config:
-        from_attribute = True
+    model_config = ConfigDict(
+        from_attributes=True
+    )
+
+    # deprecated structure
+    # class Config:
+    #     from_attribute = True
 
 
 class HotelSearchArgs:

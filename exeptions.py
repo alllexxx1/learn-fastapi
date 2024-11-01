@@ -62,3 +62,8 @@ class DateMessException(BaseBookingException):
 class TooLongBookingPeriodException(BaseBookingException):
     status_code = status.HTTP_406_NOT_ACCEPTABLE
     detail = 'The maximum booking period is 31 days'
+
+
+class NoRightsException(BaseBookingException):
+    status_code = status.HTTP_403_FORBIDDEN
+    detail = 'Get out of here!'

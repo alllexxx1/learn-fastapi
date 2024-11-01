@@ -55,7 +55,7 @@ class BookingDAO(BaseDAO):
             ).where(Rooms.id == room_id).group_by(
                 Rooms.quantity, booked_rooms.c.room_id
             )
-            print(query_rooms_left.compile(engine, compile_kwargs={'literal_binds': True}))  # Show the raw SQL queries
+            # print(query_rooms_left.compile(engine, compile_kwargs={'literal_binds': True}))  # Show the raw SQL queries
 
             query_rooms_left_result = await session.execute(query_rooms_left)
             rooms_left: int = query_rooms_left_result.scalar()

@@ -40,7 +40,13 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     yield
 
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(
+    title='Hotels booking',
+    version='0.1.0',
+    root_path='/api',
+    lifespan=lifespan
+)
+
 app.mount(
     '/static',
     StaticFiles(directory='hotels_app/static'),

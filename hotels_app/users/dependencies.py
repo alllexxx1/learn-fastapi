@@ -32,7 +32,7 @@ async def get_current_user(token: str = Depends(get_token)):
     if not user_id:
         raise exeptions.InsufficientPayloadDataException
 
-    user = await UserDAO.find_by_id(int(user_id))
+    user = await UserDAO.find_one_or_none(id=int(user_id))
     if not user:
         raise exeptions.NoSuchUserException
 
