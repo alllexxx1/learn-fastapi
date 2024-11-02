@@ -1,0 +1,19 @@
+[flake8]
+accept-encodings = utf-8
+max-complexity = 6
+statistics = False
+max-line-length = 88
+enable-extensions = G
+
+exclude = .git,__pycache__,.venv,dist,build,migrations
+
+ignore =
+  # line break occurred before a binary operator
+  W503,
+  # since it is a learning project, I want to leave unused imports
+  # for the future revision
+  F401
+
+per-file-ignores =
+  # init modules can contain the local imports, logic, unused imports
+  __init__.py: F401

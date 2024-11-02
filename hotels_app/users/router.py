@@ -6,7 +6,7 @@ from hotels_app.users.models import Users
 from hotels_app.users.schemas import SchemaUserAuth, SchemaUser
 from hotels_app.users.dao import UserDAO
 from hotels_app.users.auth import get_password_hash, verify_password, create_access_token
-from exeptions import UserAlreadyExistsException, IncorrectCredentialsException, NoRightsException
+from exeptions import UserAlreadyExistsException, IncorrectCredentialsException
 
 
 router = APIRouter(

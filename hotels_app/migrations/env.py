@@ -22,10 +22,10 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 
 # from myapp import mymodel
-from hotels_app.rooms.models import Rooms
-from hotels_app.hotels.models import Hotels
-from hotels_app.users.models import Users
-from hotels_app.bookings.models import Bookings
+from hotels_app.rooms.models import Rooms  # noqa: E402
+from hotels_app.hotels.models import Hotels  # noqa: E402
+from hotels_app.users.models import Users  # noqa: E402
+from hotels_app.bookings.models import Bookings  # noqa: E402
 
 # target_metadata = mymodel.Base.metadata
 target_metadata = Base.metadata
