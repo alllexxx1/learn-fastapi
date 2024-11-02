@@ -24,7 +24,6 @@ async def prepare_database():
     assert settings.MODE == 'TEST'
 
     async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
 
     def open_mock_json(model: str):
@@ -51,6 +50,10 @@ async def prepare_database():
             await session.execute(query)
         await session.commit()
 
+    yield
+
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
 
 # Replacing the event loop fixture with a custom implementation is deprecated.
 # Instead, "asyncio_default_fixture_loop_scope"

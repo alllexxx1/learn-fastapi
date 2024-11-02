@@ -1,7 +1,4 @@
-from types import NoneType
-
 import pytest
-from sqlalchemy.testing import is_instance_of
 
 from hotels_app.users.dao import UserDAO
 

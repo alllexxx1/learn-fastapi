@@ -1,8 +1,11 @@
+import time
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
+import sentry_sdk
 import uvicorn
-from fastapi import FastAPI
+from asyncpg import DivisionByZeroError
+from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
@@ -21,6 +24,21 @@ from hotels_app.rooms.admin import RoomsAdmin
 from hotels_app.rooms.router import router as router_rooms
 from hotels_app.users.admin import AdminAuth, UsersAdmin
 from hotels_app.users.router import router as router_users
+from logger import logger
+
+
+sentry_sdk.init(
+    dsn="https://f6a090bdf6832ed1bedc0b126baf1de3@o4508229393448960.ingest.us.sentry.io/4508229401247744",
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for tracing.
+    traces_sample_rate=1.0,
+    _experiments={
+        # Set continuous_profiling_auto_start to True
+        # to automatically start the profiler on when
+        # possible.
+        "continuous_profiling_auto_start": True,
+    },
+)
 
 
 @asynccontextmanager
@@ -35,6 +53,23 @@ app = FastAPI(
 )
 
 app.mount('/static', StaticFiles(directory='hotels_app/static'), name='static')
+
+
+@app.middleware("http")
+async def process_time_logging(request: Request, call_next):
+    start_time = time.perf_counter()
+    response = await call_next(request)
+    process_time = time.perf_counter() - start_time
+    logger.info(
+        'Request processing time', extra={'process_time': round(process_time, 4)}
+    )
+    return response
+
+
+@app.get("/sentry-debug")
+async def trigger_error():
+    division_by_zero = 1 / 0
+
 
 # All project routers
 app.include_router(router_users)
