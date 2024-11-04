@@ -1,0 +1,60 @@
+services:
+  db:
+    image: postgres:15
+    container_name: hotels_app_db
+    env_file:
+      - .env-prod
+    ports:
+      - "5431:5432"
+
+  redis:
+    image: redis:7
+    container_name: hotels_app_redis
+#    env_file:
+#      - .env-prod
+#    ports:
+#      - "6379:6380"
+
+  hotels_app:
+    image: hotels_app_image
+    build:
+      dockerfile: Dockerfile
+      context: .
+    container_name: hotels_app
+    env_file:
+      - .env-prod
+#    command: ["/app/docker/app.sh"]
+    command: bash -c "alembic upgrade head && gunicorn main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind=0.0.0.0:8000"
+    ports:
+      - "9000:8000"
+    depends_on:
+      - db
+      - redis
+
+  celery:
+    image: hotels_app_celery_image
+    build:
+      context: .
+    container_name: hotels_app_celery
+    env_file:
+      - .env-prod
+#    command: ["/app/docker/celery.sh", "celery"]
+    command: bash -c "celery --app=hotels_app.tasks.celery_app:celery_app worker --loglevel=INFO"
+    depends_on:
+      - redis
+      - hotels_app
+
+  flower:
+    image: hotels_app_celery_flower_image
+    build:
+      context: .
+    container_name: hotels_app_celery_flower
+    env_file:
+      - .env-prod
+#    command: ["/app/docker/celery.sh", "flower"]
+    command: bash -c "celery --app=hotels_app.tasks.celery_app:celery_app flower"
+    ports:
+      - '5555:5555'
+    depends_on:
+      - redis
+      - hotels_app

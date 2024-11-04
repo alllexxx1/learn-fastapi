@@ -7,6 +7,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     MODE: Literal['DEV', 'TEST', 'PROD']
     LOG_LVL: Literal['DEBUG', 'INFO']
+
     SECRET_KEY: str
     HASH_ALGORITHM: str
 
@@ -47,6 +48,7 @@ class Settings(BaseSettings):
     IMAP_SMTP_USERNAME: str
     IMAP_SMTP_PASSWORD: str
 
+    SENTRY_DSN: str
     # @root_validator(skip_on_failure=True)
     # def get_database_url(cls, v):
     #     v['DATABASE_URL'] = f'postgresql+asyncpg://{v["DB_USER"]}:{v["DB_PASS"]}@{v["DB_HOST"]}:{v["DB_PORT"]}/{v["DB_NAME"]}'

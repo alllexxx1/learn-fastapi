@@ -4,7 +4,6 @@ from contextlib import asynccontextmanager
 
 import sentry_sdk
 import uvicorn
-from asyncpg import DivisionByZeroError
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi_cache import FastAPICache
@@ -28,7 +27,7 @@ from logger import logger
 
 
 sentry_sdk.init(
-    dsn="https://f6a090bdf6832ed1bedc0b126baf1de3@o4508229393448960.ingest.us.sentry.io/4508229401247744",
+    dsn=settings.SENTRY_DSN,
     # Set traces_sample_rate to 1.0 to capture 100%
     # of transactions for tracing.
     traces_sample_rate=1.0,
@@ -64,11 +63,6 @@ async def process_time_logging(request: Request, call_next):
         'Request processing time', extra={'process_time': round(process_time, 4)}
     )
     return response
-
-
-@app.get("/sentry-debug")
-async def trigger_error():
-    division_by_zero = 1 / 0
 
 
 # All project routers

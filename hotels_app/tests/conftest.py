@@ -57,7 +57,7 @@ async def prepare_database():
 
 # Replacing the event loop fixture with a custom implementation is deprecated.
 # Instead, "asyncio_default_fixture_loop_scope"
-# is configured it "pytest.ini"
+# is configured in "pytest.ini"
 
 # New event loop for test running
 # @pytest.fixture(scope='session')
