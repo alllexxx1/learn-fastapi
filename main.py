@@ -8,6 +8,7 @@ from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
+from prometheus_fastapi_instrumentator import Instrumentator
 from redis import asyncio as aioredis
 from sqladmin import Admin
 
@@ -52,6 +53,13 @@ app = FastAPI(
 )
 
 app.mount('/static', StaticFiles(directory='hotels_app/static'), name='static')
+
+# Configure exporter for Prometheus
+instrumentator = Instrumentator(
+    should_group_status_codes=False,
+    excluded_handlers=[".*admin.*", "/metrics"],
+)
+instrumentator.instrument(app).expose(app)
 
 
 @app.middleware("http")

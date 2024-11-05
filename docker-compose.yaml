@@ -56,10 +56,31 @@ services:
 #    command: ["/app/docker/celery.sh", "flower"]
     command: bash -c "celery --app=hotels_app.tasks.celery_app:celery_app flower"
     ports:
-      - '5555:5555'
+      - "5555:5555"
     depends_on:
       - redis
       - hotels_app
 
+  prometheus:
+    image: prom/prometheus:v2.55.0
+    container_name: hotels_app_prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana:11.3.0
+    container_name: hotels_app_grafana
+    volumes:
+      - grafana_data:/var/lib/grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+
 volumes:
   postgres_data:
+  prometheus_data:
+  grafana_data:
