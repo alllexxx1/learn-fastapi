@@ -14,5 +14,5 @@ COPY . .
 # Allow container to run bash sripts
 RUN chmod a+x /app/docker/*.sh
 
-# The command specified in Docker-compose.yaml file
-#CMD ["gunicorn", "main:app", "--workers", "4", "--worker-class", "uvicorn.workers.UvicornWorker", "--bind=0.0.0.0:8000"]
+
+CMD ["gunicorn", "main:app", "--workers", "1", "--worker-class", "uvicorn.workers.UvicornWorker", "--bind=0.0.0.0:8000"]
