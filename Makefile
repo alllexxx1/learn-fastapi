@@ -14,4 +14,4 @@ celery-up:
 	celery -A hotels_app.tasks.celery_app:celery_app worker --loglevel=INFO
 
 flower-celery-up:
-	celery -A hotels_app.tasks.celery_app:celery_app flower
+	celery -A hotels_app.tasks.celery_app:celery_app flowerr
